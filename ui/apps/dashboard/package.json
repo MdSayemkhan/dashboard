@@ -46,7 +46,8 @@
     "react-router-dom": "^6.26.2",
     "tailwind-merge": "^2.5.3",
     "yaml": "^2.5.1",
-    "zustand": "^4.5.5"
+    "zustand": "^4.5.5",
+    "@ant-design/icons": "^5.0.0"
   },
   "devDependencies": {
     "@karmada/eslint-config-ts-react": "workspace:*",

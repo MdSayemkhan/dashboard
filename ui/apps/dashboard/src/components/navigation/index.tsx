@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { FC, CSSProperties } from 'react';
+import { FC, CSSProperties, useState } from 'react';
 import styles from './index.module.less';
 import karmadaLogo from '@/assets/karmada-logo.svg';
 import {
@@ -24,7 +24,10 @@ import {
   supportedLangConfig,
   getLangTitle,
 } from '@/utils/i18n';
-import { Dropdown } from 'antd';
+import { Dropdown, Tooltip, message, Modal } from 'antd';
+import { CodeOutlined } from '@ant-design/icons';
+import { createTerminal, getTerminalSession } from '@/services/terminal';
+import TerminalComponent from '../terminal';
 
 export interface IUserInfo {
   id: number;
@@ -37,6 +40,7 @@ interface INavigationProps {
   usePlaceholder?: boolean;
   brandText?: string;
   userInfo?: IUserInfo;
+  onTerminalClick?: () => void;
 }
 
 const Navigation: FC<INavigationProps> = (props) => {
@@ -46,6 +50,25 @@ const Navigation: FC<INavigationProps> = (props) => {
     brandText = 'Karmada Dashboard',
     userInfo,
   } = props;
+
+  const [isTerminalVisible, setTerminalVisible] = useState(false);
+  const [terminalSession, setTerminalSession] = useState<string>('');
+
+  const handleTerminalClick = async () => {
+    try {
+      const response = await createTerminal();
+      const session = await getTerminalSession(
+        response.namespace,
+        response.podName,
+        response.container
+      );
+      setTerminalSession(session.sessionId);
+      setTerminalVisible(true);
+    } catch (error) {
+      message.error('Failed to create terminal');
+    }
+  };
+
   return (
     <>
       <div className={styles.navbar}>
@@ -62,8 +85,13 @@ const Navigation: FC<INavigationProps> = (props) => {
             {/* placeholder for center element */}
           </div>
           <div className={styles.right}>
-            {/* extra components */}
             <div className={styles.extra}>
+              <Tooltip title="Terminal">
+                <CodeOutlined 
+                  className={styles.terminalIcon} 
+                  onClick={handleTerminalClick}
+                />
+              </Tooltip>
               <Dropdown
                 menu={{
                   onClick: async (v) => {
@@ -96,7 +124,16 @@ const Navigation: FC<INavigationProps> = (props) => {
         </div>
         {usePlaceholder && <div className={styles.placeholder} />}
       </div>
+      <Modal 
+        title="Terminal"
+        open={isTerminalVisible}
+        onCancel={() => setTerminalVisible(false)}
+        width={800}
+      >
+        {terminalSession && <TerminalComponent sessionId={terminalSession} />}
+      </Modal>
     </>
   );
 };
 export default Navigation;
+
