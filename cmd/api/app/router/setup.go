@@ -20,6 +20,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/karmada-io/dashboard/pkg/environment"
+	"github.com/karmada-io/dashboard/cmd/api/app/routes/terminal"
 )
 
 var (
@@ -45,6 +46,9 @@ func init() {
 	router.GET("/readyz", func(c *gin.Context) {
 		c.String(200, "readyz")
 	})
+
+	v1.POST("/misc/terminal", terminal.CreateWebTerminal)
+	v1.DELETE("/misc/terminal/:podName", terminal.DeleteWebTerminal)
 }
 
 // V1 returns the router group for /api/v1 which for resources in control plane endpoints.

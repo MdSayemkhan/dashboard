@@ -25,6 +25,8 @@ import {
   getLangTitle,
 } from '@/utils/i18n';
 import { Dropdown } from 'antd';
+import { CodeOutlined } from '@ant-design/icons';
+import TerminalButton from '../TerminalButton';
 
 export interface IUserInfo {
   id: number;
@@ -37,6 +39,7 @@ interface INavigationProps {
   usePlaceholder?: boolean;
   brandText?: string;
   userInfo?: IUserInfo;
+  onTerminalClick?: () => void;
 }
 
 const Navigation: FC<INavigationProps> = (props) => {
@@ -45,6 +48,7 @@ const Navigation: FC<INavigationProps> = (props) => {
     usePlaceholder = true,
     brandText = 'Karmada Dashboard',
     userInfo,
+    onTerminalClick,
   } = props;
   return (
     <>
@@ -59,11 +63,22 @@ const Navigation: FC<INavigationProps> = (props) => {
             </div>
           </div>
           <div className={styles.center}>
-            {/* placeholder for center element */}
+            <TerminalButton />
           </div>
           <div className={styles.right}>
             {/* extra components */}
             <div className={styles.extra}>
+              <div 
+                className={styles.terminalButton}
+                onClick={onTerminalClick}
+                style={{ 
+                  cursor: 'pointer',
+                  marginRight: '10px',
+                  fontSize: '18px',
+                }}
+              >
+                <CodeOutlined />
+              </div>
               <Dropdown
                 menu={{
                   onClick: async (v) => {

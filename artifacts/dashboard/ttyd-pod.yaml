@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ttyd-4ac87008-3426-4cae-8f3c-141e03a0e34b
+  namespace: karmada-system
+spec:
+  containers:
+  - image: hack/images/Dockerfile/tsl0922/ttyd:1.7.4-dev-v1
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: 7681
+      timeoutSeconds: 1
+    name: ttyd-4ac87008-3426-4cae-8f3c-141e03a0e34b
+    ports:
+    - containerPort: 7681
+      name: tcp
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      tcpSocket:
+        port: 7681
+      timeoutSeconds: 1
